@@ -41,6 +41,23 @@ jobs:
             - name: Setup Copilot CLI with npm
               run: npm i -g @github/copilot
 
+            - name: Debug - List report folder structure
+              run: |
+                echo "=== Report folder structure ==="
+                tree $GITHUB_WORKSPACE/report -L 3 || find $GITHUB_WORKSPACE/report -type f -o -type d | head -50
+                echo ""
+                echo "=== Contents of report root ==="
+                ls -la $GITHUB_WORKSPACE/report/
+                echo ""
+                echo "=== Check if vuln-reports exists ==="
+                [ -d "$GITHUB_WORKSPACE/report/vuln-reports" ] && echo "vuln-reports directory exists" || echo "vuln-reports directory NOT found"
+                echo ""
+                echo "=== Current working directory ==="
+                pwd
+                echo ""
+                echo "=== GITHUB_WORKSPACE value ==="
+                echo $GITHUB_WORKSPACE
+
             - name: Run Security Agent with Copilot CLI
               env: 
                 COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_GITHUB_TOKEN }}
@@ -53,7 +70,6 @@ jobs:
                 PROMPT+=$"\n- $CVEについて現レポジトリ全体にあるコードを確認し、脆弱性レポートを作成してください。"
                 PROMPT+=$'\n- 作成したレポートは　$GITHUB_WORKSPACE/report/vuln-reports/$DATE/$CURRENT_REPO/'$CVE'-脆弱性報告.md に保存してください。'
                 copilot --prompt "$PROMPT" --allow-all-tools --allow-all-paths < /dev/null
-            
 
             - name: Push to report-repo
               run: |
