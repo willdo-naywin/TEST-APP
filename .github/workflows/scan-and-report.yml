@@ -51,8 +51,11 @@ jobs:
                 echo "=== Checking .github directory ==="
                 ls -la /tmp/report/.github/ || echo ".github directory not found"
                 echo ""
+                echo "=== Checking agents directory ==="
+                ls -la /tmp/report/.github/agents/ || echo "agents directory not found"
+                echo ""
                 echo "=== Full directory tree ==="
-                find /tmp/report -type f | head -20
+                find /tmp/report -type f -name "*.md" | head -20
 
             - name: Run Security Agent with Copilot CLI
               env: 
