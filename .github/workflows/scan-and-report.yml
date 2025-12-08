@@ -41,6 +41,18 @@ jobs:
             - name: Setup Copilot CLI with npm
               run: npm i -g @github/copilot
 
+
+            - name: Debug - Check report directory
+              run: |
+                echo "=== Contents of /tmp/report ==="
+                ls -la /tmp/report/ || echo "Directory not found"
+                echo ""
+                echo "=== Checking .github directory ==="
+                ls -la /tmp/report/.github/ || echo ".github directory not found"
+                echo ""
+                echo "=== Full directory tree ==="
+                find /tmp/report -type f | head -20
+
             - name: Run Security Agent with Copilot CLI
               env: 
                 COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_GITHUB_TOKEN }}
