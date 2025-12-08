@@ -61,13 +61,21 @@ jobs:
               env: 
                 COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_GITHUB_TOKEN }}
               run: |
-                [ -f "/tmp/report/.github/agents/security-agent.md" ] || { echo "Error: security-agent.md not found"; exit 1; }
-                PROMPT="$(cat  /tmp/report/.github/agents/security-agent.md )"
+                echo "Checking file existence..."
+                [ -f "/tmp/report/.github/agents/security-agent.md" ] && echo "File exists!" || echo "File does not exist"
+                
+                echo "Reading agent file..."
+                PROMPT="$(cat /tmp/report/.github/agents/security-agent.md)"
+                echo "PROMPT length: ${#PROMPT}"
+                
                 PROMPT+=$'\n\nContext:\n'
                 PROMPT+="- Repository: $CURRENT_REPO"
                 PROMPT+=$'\n\nTask:\n'
                 PROMPT+=$"\n- $CVEについて現レポジトリ全体にあるコードを確認し、脆弱性レポートを作成してください。"
                 PROMPT+=$'\n- 作成したレポートは　/tmp/report/vuln-reports/$DATE/$CURRENT_REPO/'$CVE'-脆弱性報告.md に保存してください。'
+                
+                echo "Full PROMPT length: ${#PROMPT}"
+                echo "Calling copilot..."
                 copilot --prompt "$PROMPT" --allow-all-tools --allow-all-paths < /dev/null
 
             - name: Push to report-repo
