@@ -25,7 +25,7 @@ jobs:
               
             - name: Setup Report Repository and Get AGENT MD FILE
               run: |
-                git clone "https://x-access-token:$REPORT_REPO_TOKEN@github.com/willdo-naywin/VULN-REPORT.git" /tmp/report
+                git clone --depth 1 "https://x-access-token:$REPORT_REPO_TOKEN@github.com/willdo-naywin/VULN-REPORT.git" /tmp/report
 
             - name: Checkout target-repo main branch 
               uses: actions/checkout@v4
@@ -37,6 +37,7 @@ jobs:
               uses: actions/setup-node@v4
               with:
                 node-version: 22
+                cache: 'npm'
 
             - name: Setup Copilot CLI with npm
               run: npm i -g @github/copilot
