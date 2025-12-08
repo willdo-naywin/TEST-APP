@@ -34,7 +34,7 @@ jobs:
 
             - name: Push to report-repo
               run: |
-                git clone "https://x-access-token:${{secrets.VULN_REPORT_TOKEN}}@github.com/JORUNOJOSTAR/VULN-REPORT-TEST.git" report
+                git clone "https://x-access-token:${{secrets.VULN_REPORT_TOKEN}}@github.com/willdo-naywin/VULN-REPORT.git" report
 
                 DATE=$(date +"%Y-%m-%d")
                 mkdir -p report/$DATE
