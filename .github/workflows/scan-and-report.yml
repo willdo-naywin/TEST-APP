@@ -25,7 +25,7 @@ jobs:
               
             - name: Setup Report Repository and Get AGENT MD FILE
               run: |
-                git clone "https://x-access-token:$REPORT_REPO_TOKEN@github.com/willdo-naywin/VULN-REPORT.git" $GITHUB_WORKSPACE/report
+                git clone "https://x-access-token:$REPORT_REPO_TOKEN@github.com/willdo-naywin/VULN-REPORT.git" /report
 
             - name: Checkout target-repo main branch 
               uses: actions/checkout@v4
@@ -41,39 +41,22 @@ jobs:
             - name: Setup Copilot CLI with npm
               run: npm i -g @github/copilot
 
-            - name: Debug - List report folder structure
-              run: |
-                echo "=== Report folder structure ==="
-                tree $GITHUB_WORKSPACE/report -L 3 || find $GITHUB_WORKSPACE/report -type f -o -type d | head -50
-                echo ""
-                echo "=== Contents of report root ==="
-                ls -la $GITHUB_WORKSPACE/report/
-                echo ""
-                echo "=== Check if vuln-reports exists ==="
-                [ -d "$GITHUB_WORKSPACE/report/vuln-reports" ] && echo "vuln-reports directory exists" || echo "vuln-reports directory NOT found"
-                echo ""
-                echo "=== Current working directory ==="
-                pwd
-                echo ""
-                echo "=== GITHUB_WORKSPACE value ==="
-                echo $GITHUB_WORKSPACE
-
             - name: Run Security Agent with Copilot CLI
               env: 
                 COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_GITHUB_TOKEN }}
               run: |
-                [ -f "$GITHUB_WORKSPACE/report/.github/agents/security-agent.md" ] || { echo "Error: security-agent.md not found"; exit 1; }
-                PROMPT="$(cat  $GITHUB_WORKSPACE/report/.github/agents/security-agent.md )"
+                [ -f "/report/.github/agents/security-agent.md" ] || { echo "Error: security-agent.md not found"; exit 1; }
+                PROMPT="$(cat  /report/.github/agents/security-agent.md )"
                 PROMPT+=$'\n\nContext:\n'
                 PROMPT+="- Repository: $CURRENT_REPO"
                 PROMPT+=$'\n\nTask:\n'
                 PROMPT+=$"\n- $CVEについて現レポジトリ全体にあるコードを確認し、脆弱性レポートを作成してください。"
-                PROMPT+=$'\n- 作成したレポートは　$GITHUB_WORKSPACE/report/vuln-reports/$DATE/$CURRENT_REPO/'$CVE'-脆弱性報告.md に保存してください。'
+                PROMPT+=$'\n- 作成したレポートは　/report/vuln-reports/$DATE/$CURRENT_REPO/'$CVE'-脆弱性報告.md に保存してください。'
                 copilot --prompt "$PROMPT" --allow-all-tools --allow-all-paths < /dev/null
 
             - name: Push to report-repo
               run: |
-                cd $GITHUB_WORKSPACE/report
+                cd /report
                 git config user.name "report-bot"
                 git config user.email "bot@example.com"                
                 git add .
