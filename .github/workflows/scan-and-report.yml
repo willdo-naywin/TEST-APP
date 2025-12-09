@@ -20,9 +20,6 @@ jobs:
           CURRENT_REPO     : ${{ github.repository }}
 
         steps:
-            - name: Set DATE environment variable
-              run: echo "DATE=$(date +"%Y-%m-%d")" >> $GITHUB_ENV
-              
             - name: Setup Report Repository and Get AGENT MD FILE
               run: |
                 git clone --depth 1 "https://x-access-token:$REPORT_REPO_TOKEN@github.com/willdo-naywin/VULN-REPORT.git" /tmp/report
@@ -42,21 +39,6 @@ jobs:
             - name: Setup Copilot CLI with npm
               run: npm i -g @github/copilot
 
-
-            - name: Debug - Check report directory
-              run: |
-                echo "=== Contents of /tmp/report ==="
-                ls -la /tmp/report/ || echo "Directory not found"
-                echo ""
-                echo "=== Checking .github directory ==="
-                ls -la /tmp/report/.github/ || echo ".github directory not found"
-                echo ""
-                echo "=== Checking agents directory ==="
-                ls -la /tmp/report/.github/agents/ || echo "agents directory not found"
-                echo ""
-                echo "=== Full directory tree ==="
-                find /tmp/report -type f -name "*.md" | head -20
-
             - name: Run Security Agent with Copilot CLI
               env: 
                 COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_GITHUB_TOKEN }}
@@ -66,15 +48,12 @@ jobs:
                 
                 echo "Reading agent file..."
                 PROMPT="$(cat /tmp/report/.github/agents/security-agent.md)"
-                echo "PROMPT length: ${#PROMPT}"
-                
                 PROMPT+=$'\n\nContext:\n'
                 PROMPT+="- Repository: $CURRENT_REPO"
                 PROMPT+=$'\n\nTask:\n'
-                PROMPT+=$"\n- $CVEについて現レポジトリ全体にあるコードを確認し、脆弱性レポートを作成してください。"
-                PROMPT+=$'\n- 作成したレポートは　/tmp/report/vuln-reports/$DATE/$CURRENT_REPO/'$CVE'-脆弱性報告.md に保存してください。'
+                PROMPT+=$"- $CVEについて現レポジトリ全体にあるコードを確認し、脆弱性レポートを作成してください。"
+                PROMPT+=$'\n- 作成したレポートは　/tmp/report/vuln-reports/$(date +"%Y-%m-%d")/$CURRENT_REPO/'$CVE'-脆弱性報告.md に保存してください。'
                 
-                echo "Full PROMPT length: ${#PROMPT}"
                 echo "=== PROMPT CONTENT START ==="
                 echo "$PROMPT"
                 echo "=== PROMPT CONTENT END ==="
