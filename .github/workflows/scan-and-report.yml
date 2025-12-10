@@ -58,7 +58,27 @@ jobs:
                 echo "$PROMPT"
                 echo "=== PROMPT CONTENT END ==="
                 echo "Calling copilot..."
+                echo "Copilot version:"
+                copilot --version 2>&1 || echo "Warning: Could not get copilot version"
+                
+                echo "Running copilot with detailed output..."
+                set -x  # Enable command tracing for debugging
                 copilot --prompt "$PROMPT" --allow-all-tools --allow-all-paths < /dev/null
+                COPILOT_EXIT_CODE=$?
+                set +x  # Disable command tracing
+                
+                echo "Copilot exit code: $COPILOT_EXIT_CODE"
+                
+                if [ $COPILOT_EXIT_CODE -ne 0 ]; then
+                  echo "ERROR: Copilot failed with exit code $COPILOT_EXIT_CODE"
+                  echo "Debugging information:"
+                  echo "- Working directory: $(pwd)"
+                  echo "- COPILOT_GITHUB_TOKEN set: $([ -n "$COPILOT_GITHUB_TOKEN" ] && echo 'yes' || echo 'no')"
+                  echo "- PROMPT length: ${#PROMPT}"
+                  exit $COPILOT_EXIT_CODE
+                fi
+                
+                echo "Copilot completed successfully"
 
             - name: Push to report-repo
               run: |
