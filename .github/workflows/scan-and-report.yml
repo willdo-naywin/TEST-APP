@@ -58,7 +58,7 @@ jobs:
                 echo "$PROMPT"
                 echo "=== PROMPT CONTENT END ==="
                 echo "Calling copilot..."
-                copilot --prompt "$PROMPT" --allow-all-tools --allow-all-paths < /dev/null
+                copilot --prompt "$PROMPT" --allow-all-tools --allow-all-paths
 
             - name: Push to report-repo
               run: |
