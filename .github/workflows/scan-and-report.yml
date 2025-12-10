@@ -52,7 +52,7 @@ jobs:
                 PROMPT+="- Repository: $CURRENT_REPO"
                 PROMPT+=$'\n\nTask:\n'
                 PROMPT+=$"- $CVEについて現レポジトリ全体にあるコードを確認し、脆弱性レポートを作成してください。"
-                PROMPT+=$'\n- 作成したレポートは　/tmp/report/vuln-reports/$(date +"%Y-%m-%d")/$CURRENT_REPO/'$CVE'-脆弱性報告.md に保存してください。'
+                PROMPT+=$'\n- 作成したレポートは　/tmp/report/vuln-reports/'"$(date +"%Y-%m-%d")"'/'"$CURRENT_REPO"'/'"$CVE"'-脆弱性報告.md に保存してください。'
                 
                 echo "=== PROMPT CONTENT START ==="
                 echo "$PROMPT"
