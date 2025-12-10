@@ -58,13 +58,13 @@ jobs:
                 echo "$PROMPT"
                 echo "=== PROMPT CONTENT END ==="
                 echo "Calling copilot..."
-                # copilot --prompt "$PROMPT" --allow-all-tools --allow-all-paths < /dev/null
+                copilot --prompt "$PROMPT" --allow-all-tools --allow-all-paths < /dev/null
 
-            # - name: Push to report-repo
-            #   run: |
-            #     cd /tmp/report
-            #     git config user.name "report-bot"
-            #     git config user.email "bot@example.com"                
-            #     git add .
-            #     git commit -m "CVE returned from target-repo"
-            #     git push
+            - name: Push to report-repo
+              run: |
+                cd /tmp/report
+                git config user.name "report-bot"
+                git config user.email "bot@example.com"                
+                git add .
+                git commit -m "CVE returned from target-repo"
+                git push
